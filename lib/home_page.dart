@@ -3,6 +3,7 @@ import 'package:pdf_scanner/model/scan_grid.dart';
 import 'package:pdf_scanner/widgets/search_bar.dart';
 import 'package:pdf_scanner/model/scans.dart';
 import 'package:pdf_scanner/widgets/scan_tile.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -239,7 +240,18 @@ Widget _gridView(List<Scan> scans) {
     itemCount: scans.length,
     itemBuilder: (context, i) {
       final scan = scans[i];
-      return ScanGridCard(scan: scan, onTap: () {}, onShare: () {});
+      return ScanGridCard(
+        scan: scan,
+        onTap: () {},
+        onShare: () async {
+          await SharePlus.instance.share(
+            ShareParams(
+              // files: [XFile(scan.imagePath)],
+              text: 'Check out this scan: ${scan.title}',
+            ),
+          );
+        },
+      );
     },
   );
 }

@@ -5,6 +5,7 @@ class Scan {
     required this.pages,
     required this.date,
     required this.bytes,
+    required this.imagePath,
   });
 
   final String title;
@@ -12,7 +13,7 @@ class Scan {
   final int pages;
   final DateTime date;
   final int bytes;
-
+  final String imagePath;
   String get subtitle {
     const months = [
       'Jan',
@@ -41,6 +42,7 @@ final sampleScans = <Scan>[
     pages: 3,
     date: DateTime(2026, 10, 8),
     bytes: 420000,
+    imagePath: 'assets/images/electric_bill.png',
   ),
   Scan(
     title: 'Receipt, hardware store',
@@ -48,6 +50,7 @@ final sampleScans = <Scan>[
     pages: 1,
     date: DateTime(2026, 10, 6),
     bytes: 1800000,
+    imagePath: 'assets/images/Receipt.png',
   ),
   Scan(
     title: 'Lease agreement',
@@ -55,6 +58,7 @@ final sampleScans = <Scan>[
     pages: 5,
     date: DateTime(2026, 9, 29),
     bytes: 2300000,
+    imagePath: 'assets/images/Lease.png',
   ),
   Scan(
     title: 'Passport photo page',
@@ -62,6 +66,7 @@ final sampleScans = <Scan>[
     pages: 1,
     date: DateTime(2026, 9, 21),
     bytes: 3100000,
+    imagePath: 'assets/images/Passport.png',
   ),
   Scan(
     title: 'Class notes, week 3',
@@ -69,6 +74,7 @@ final sampleScans = <Scan>[
     pages: 4,
     date: DateTime(2026, 9, 18),
     bytes: 1500000,
+    imagePath: 'assets/images/Class.png',
   ),
   Scan(
     title: 'Insurance card',
@@ -76,6 +82,7 @@ final sampleScans = <Scan>[
     pages: 2,
     date: DateTime(2026, 9, 2),
     bytes: 2700000,
+    imagePath: 'assets/images/Insurance.png',
   ),
   Scan(
     title: 'Warranty, dishwasher',
@@ -83,5 +90,6 @@ final sampleScans = <Scan>[
     pages: 2,
     date: DateTime(2026, 8, 27),
     bytes: 640000,
+    imagePath: 'assets/images/Warranty.png',
   ),
 ];
