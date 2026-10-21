@@ -1,4 +1,4 @@
-# pdf_scanner
+# doc_scanner
 
 A new Flutter project.
 

@@ -18,7 +18,6 @@ class _ScanPageState extends State<ScanPage> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Colors.blue[200],
       ),
       body: Center(child: Text('Scan Page')),
     );
