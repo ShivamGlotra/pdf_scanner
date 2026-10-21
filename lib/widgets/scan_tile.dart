@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pdf_scanner/model/scans.dart';
+import 'package:doc_scanner/models/scans.dart';
 
 class ScanTile extends StatelessWidget {
   const ScanTile({super.key, required this.scan});
@@ -21,7 +21,9 @@ class ScanTile extends StatelessWidget {
           border: Border.all(color: scheme.outlineVariant),
         ),
         child: Icon(
-          scan.isPdf ? Icons.picture_as_pdf_outlined : Icons.image_outlined,
+          scan.format == ScanFormat.pdf
+              ? Icons.picture_as_pdf_outlined
+              : Icons.image_outlined,
           color: scheme.onSurfaceVariant,
         ),
       ),
@@ -31,7 +33,9 @@ class ScanTile extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      subtitle: Text(scan.subtitle),
+      subtitle: Text(
+        scan.pageCount == 1 ? '1 page' : '${scan.pageCount} pages',
+      ),
       trailing: IconButton(
         icon: const Icon(Icons.share_outlined),
         tooltip: 'Share',

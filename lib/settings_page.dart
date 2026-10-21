@@ -18,7 +18,6 @@ class _SettingsPageState extends State<SettingsPage> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Colors.blue[200],
       ),
       body: const Center(child: Text('Settings Page')),
     );

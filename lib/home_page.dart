@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pdf_scanner/model/scan_grid.dart';
-import 'package:pdf_scanner/widgets/search_bar.dart';
-import 'package:pdf_scanner/model/scans.dart';
-import 'package:pdf_scanner/widgets/scan_tile.dart';
+import 'package:doc_scanner/models/scan_grid.dart';
+import 'package:doc_scanner/widgets/search_bar.dart';
+import 'package:doc_scanner/models/scans.dart';
+import 'package:doc_scanner/widgets/scan_tile.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:doc_scanner/data/sample_scan_files.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -34,8 +35,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final list = sampleScans.where((scan) {
       final matchesKind = switch (_selectedScanKind) {
         ScanKind.all => true,
-        ScanKind.pdf => scan.isPdf,
-        ScanKind.images => !scan.isPdf,
+        ScanKind.pdf => scan.format == ScanFormat.pdf,
+        ScanKind.images => scan.format == ScanFormat.images,
       };
       final matchesQuery =
           query.isEmpty || scan.title.toLowerCase().contains(query);
@@ -43,9 +44,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     }).toList();
 
     int Function(Scan, Scan) compare = switch (_selectedLibrarySort) {
-      LibrarySort.newest => (a, b) => b.date.compareTo(a.date),
-      LibrarySort.oldest => (a, b) => a.date.compareTo(b.date),
-      LibrarySort.largest => (a, b) => b.bytes.compareTo(a.bytes),
+      LibrarySort.newest => (a, b) => b.createdAt.compareTo(a.createdAt),
+      LibrarySort.oldest => (a, b) => a.createdAt.compareTo(b.createdAt),
+      LibrarySort.largest => (a, b) => b.sizeBytes.compareTo(a.sizeBytes),
       LibrarySort.nameAZ => (a, b) => a.title.toLowerCase().compareTo(
         b.title.toLowerCase(),
       ),
@@ -66,7 +67,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Colors.blue[200],
+        // backgroundColor: Colors.blue[200],
         // surfaceTintColor: Colors.transparent, // stops the tint shift on scroll
         // scrolledUnderElevation: 0,
         actions: [

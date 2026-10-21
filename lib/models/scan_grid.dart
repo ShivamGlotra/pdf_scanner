@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pdf_scanner/model/scans.dart';
+import 'package:doc_scanner/models/scans.dart';
 
 class ScanGridCard extends StatelessWidget {
   const ScanGridCard({super.key, required this.scan, this.onTap, this.onShare});
@@ -56,16 +56,16 @@ class ScanGridCard extends StatelessWidget {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: scan.isPdf
+                          color: scan.format == ScanFormat.pdf
                               ? scheme.errorContainer
                               : scheme.tertiaryContainer,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          scan.isPdf ? 'PDF' : 'IMG',
+                          scan.format == ScanFormat.pdf ? 'PDF' : 'IMG',
                           style: theme.textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: scan.isPdf
+                            color: scan.format == ScanFormat.pdf
                                 ? scheme.onErrorContainer
                                 : scheme.onTertiaryContainer,
                           ),
@@ -96,7 +96,9 @@ class ScanGridCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          scan.subtitle,
+                          scan.pageCount == 1
+                              ? '1 page'
+                              : '${scan.pageCount} pages',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
