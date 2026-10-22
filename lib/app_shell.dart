@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:doc_scanner/home_page.dart';
-import 'package:doc_scanner/scan_page.dart';
-import 'package:doc_scanner/settings_page.dart';
+import 'package:doc_scanner/screens/home_screen.dart';
+import 'package:doc_scanner/screens/scan_screen.dart';
+import 'package:doc_scanner/screens/settings_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
