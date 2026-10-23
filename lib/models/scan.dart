@@ -55,9 +55,9 @@ class Scan {
     return {
       'id': id,
       'title': title,
-      'format': format,
+      'format': format.name,
       'files': files,
-      'pagesCount': pageCount,
+      'pageCount': pageCount,
       'createdAt': createdAt.toIso8601String(),
       'sizeBytes': sizeBytes,
     };

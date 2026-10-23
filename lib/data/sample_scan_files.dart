@@ -1,4 +1,4 @@
-import 'package:doc_scanner/models/scans.dart';
+import 'package:doc_scanner/models/scan.dart';
 
 final sampleScans = <Scan>[
   Scan(

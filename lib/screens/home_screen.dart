@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:doc_scanner/models/scan_grid.dart';
 import 'package:doc_scanner/widgets/search_bar.dart';
-import 'package:doc_scanner/models/scans.dart';
+import 'package:doc_scanner/models/scan.dart';
 import 'package:doc_scanner/widgets/scan_tile.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:doc_scanner/data/sample_scan_files.dart';

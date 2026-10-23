@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doc_scanner/models/scans.dart';
+import 'package:doc_scanner/models/scan.dart';
 
 class ScanTile extends StatelessWidget {
   const ScanTile({super.key, required this.scan});
