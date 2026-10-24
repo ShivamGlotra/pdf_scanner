@@ -1,19 +1,19 @@
-enum ScanFormat { pdf, images }
+enum ScanFormat { pdf, image }
 
 extension ScanFormatInfo on ScanFormat {
   String get label => switch (this) {
     ScanFormat.pdf => "PDF",
-    ScanFormat.images => "Images",
+    ScanFormat.image => "Images",
   };
 
   String get fileExtension => switch (this) {
     ScanFormat.pdf => "pdf",
-    ScanFormat.images => "jpg",
+    ScanFormat.image => "jpg",
   };
 
   String get mimeType => switch (this) {
     ScanFormat.pdf => "application/pdf",
-    ScanFormat.images => "image/jpeg",
+    ScanFormat.image => "image/jpeg",
   };
 }
 

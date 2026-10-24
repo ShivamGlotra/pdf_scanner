@@ -7,7 +7,7 @@ void main() {
     final item = Scan(
       id: '1',
       title: 'Receipt',
-      format: ScanFormat.images,
+      format: ScanFormat.image,
       files: const ['1_1.jpg', '1_2.jpg'],
       pageCount: 2,
       createdAt: DateTime.utc(2026, 10, 8, 14, 30),
@@ -18,7 +18,7 @@ void main() {
 
     expect(copy.id, '1');
     expect(copy.title, 'Receipt');
-    expect(copy.format, ScanFormat.images);
+    expect(copy.format, ScanFormat.image);
     expect(copy.files, ['1_1.jpg', '1_2.jpg']);
     expect(copy.createdAt, item.createdAt);
     expect(copy.sizeBytes, 2048);
