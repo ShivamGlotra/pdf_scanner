@@ -27,6 +27,9 @@ String formatLongDate(DateTime date) =>
 // 14:30
 String formatTime(DateTime date) => '${_two(date.hour)}:${_two(date.minute)}';
 
+String defaultScanName(DateTime date) =>
+    'Scan ${formatShortDate(date)} at ${formatTime(date)}';
+
 // Name for a brand new scan
 String formatNewScanName(DateTime date) =>
     'Scan ${formatShortDate(date)} at ${formatTime(date)}';

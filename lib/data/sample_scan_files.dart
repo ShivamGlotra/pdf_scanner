@@ -13,7 +13,7 @@ final sampleScans = <Scan>[
   Scan(
     id: 'scan-002',
     title: 'Receipt, hardware store',
-    format: ScanFormat.images,
+    format: ScanFormat.image,
     files: ['assets/images/Receipt.png'],
     pageCount: 1,
     createdAt: DateTime(2026, 10, 6),
@@ -31,7 +31,7 @@ final sampleScans = <Scan>[
   Scan(
     id: 'scan-004',
     title: 'Passport photo page',
-    format: ScanFormat.images,
+    format: ScanFormat.image,
     files: ['assets/images/Passport.png'],
     pageCount: 1,
     createdAt: DateTime(2026, 9, 21),
@@ -49,7 +49,7 @@ final sampleScans = <Scan>[
   Scan(
     id: 'scan-006',
     title: 'Insurance card',
-    format: ScanFormat.images,
+    format: ScanFormat.image,
     files: ['assets/images/Insurance.png', 'assets/images/Insurance_back.png'],
     pageCount: 2,
     createdAt: DateTime(2026, 9, 2),
