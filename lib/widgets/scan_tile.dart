@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:doc_scanner/models/scan.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ScanTile extends StatelessWidget {
   const ScanTile({super.key, required this.scan});
@@ -39,7 +40,14 @@ class ScanTile extends StatelessWidget {
       trailing: IconButton(
         icon: const Icon(Icons.share_outlined),
         tooltip: 'Share',
-        onPressed: () {},
+        onPressed: () async {
+          await SharePlus.instance.share(
+            ShareParams(
+              // files: [XFile(scan.imagePath)],
+              text: 'Check out this scan: ${scan.title}',
+            ),
+          );
+        },
       ),
       onTap: () {},
     );
