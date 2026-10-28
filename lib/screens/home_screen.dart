@@ -1,10 +1,14 @@
+import 'package:doc_scanner/utils/format.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:doc_scanner/models/scan_grid.dart';
 import 'package:doc_scanner/widgets/search_bar.dart';
 import 'package:doc_scanner/models/scan.dart';
 import 'package:doc_scanner/widgets/scan_tile.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:doc_scanner/data/sample_scan_files.dart';
+import 'package:doc_scanner/state/library_controller.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -36,7 +40,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       final matchesKind = switch (_selectedScanKind) {
         ScanKind.all => true,
         ScanKind.pdf => scan.format == ScanFormat.pdf,
-        ScanKind.images => scan.format == ScanFormat.images,
+        ScanKind.images => scan.format == ScanFormat.image,
       };
       final matchesQuery =
           query.isEmpty || scan.title.toLowerCase().contains(query);
@@ -57,7 +61,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final scans = _filteredScans;
+    final library = context.watch<LibraryController>();
+    // final scans = _filteredScans;
+    final scanItems = library.allScanItems;
 
     return Scaffold(
       appBar: AppBar(
@@ -140,37 +146,50 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          _KindFilterRow(
-            selected: _selectedScanKind,
-            onChanged: (kind) {
-              setState(() {
-                _selectedScanKind = kind;
-              });
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Text(
-              '${scans.length} scans, ${_sortLabels[_selectedLibrarySort]}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-          Expanded(
-            child: scans.isEmpty
-                ? const Center(child: Text('No files found'))
-                : HomePageWidget.isGridView
-                ? _gridView(scans)
-                : ListView.builder(
-                    itemCount: scans.length,
-                    itemBuilder: (context, i) => ScanTile(scan: scans[i]),
+      body: !library.isLoaded
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                _KindFilterRow(
+                  selected: _selectedScanKind,
+                  onChanged: (kind) {
+                    setState(() {
+                      _selectedScanKind = kind;
+                    });
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: Text(
+                    '${library.allScanItems.length} scans, ${_sortLabels[_selectedLibrarySort]}',
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-          ),
-        ],
-      ),
+                ),
+                Expanded(
+                  // child: scans.isEmpty
+                  //     ? const Center(child: Text('No files found'))
+                  //     : HomePageWidget.isGridView
+                  //     ? _gridView(scans)
+                  //     : ListView.builder(
+                  //         itemCount: scans.length,
+                  //         itemBuilder: (context, i) => ScanTile(scan: scans[i]),
+                  //       ),
+                  child: library.allScanItems.isEmpty
+                      ? const Center(child: Text('No files found'))
+                      : HomePageWidget.isGridView
+                      ? _gridView(library.allScanItems)
+                      : ListView.builder(
+                          itemCount: scanItems.length,
+                          itemBuilder: (context, i) {
+                            final scan = scanItems[i];
+                            return ScanTile(scan: scan);
+                          },
+                        ),
+                ),
+              ],
+            ),
     );
   }
 }
