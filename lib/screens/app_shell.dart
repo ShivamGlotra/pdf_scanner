@@ -12,12 +12,11 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomePageWidget(),
-    ScanPage(),
-    SettingsPage(),
-  ];
+  void _goToHomePage() {
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -28,7 +27,14 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _widgetOptions),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          const HomePageWidget(),
+          ScanPage(onSeeAllPressed: _goToHomePage),
+          const SettingsPage(),
+        ],
+      ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           splashFactory: NoSplash.splashFactory,
