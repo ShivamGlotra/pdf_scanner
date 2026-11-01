@@ -20,7 +20,7 @@ class LibraryController extends ChangeNotifier {
   List<Scan> get allScanItems => _scanItems;
 
   String get query => _query;
-  ScanFormat? get format => _filter;
+  ScanFormat? get filter => _filter;
 
   int get totalBytes => _scanItems.fold(0, (sum, item) => sum + item.sizeBytes);
 
