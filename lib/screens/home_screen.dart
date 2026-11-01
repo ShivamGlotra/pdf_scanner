@@ -1,3 +1,4 @@
+import 'package:doc_scanner/services/scan_repository.dart';
 import 'package:doc_scanner/utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,7 @@ import 'package:doc_scanner/state/library_controller.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
-  static bool isGridView = true;
+  static bool isGridView = false;
 
   @override
   State<HomePageWidget> createState() => _HomePageWidgetState();
@@ -64,10 +65,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final library = context.watch<LibraryController>();
     // final scans = _filteredScans;
     final scanItems = library.allScanItems;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Library'),
+        title: Text(
+          'Library',
+          style: TextStyle(color: isDark ? Colors.white : Colors.black),
+        ),
         titleTextStyle: const TextStyle(
           color: Colors.black,
           fontSize: 20,
@@ -184,7 +189,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           itemCount: scanItems.length,
                           itemBuilder: (context, i) {
                             final scan = scanItems[i];
-                            return ScanTile(scan: scan);
+                            return ScanTile(
+                              scanItem: scan,
+                              onTap: () {},
+                              onLongPress: () {},
+                            );
                           },
                         ),
                 ),
@@ -263,11 +272,13 @@ Widget _gridView(List<Scan> scans) {
       return ScanGridCard(
         scan: scan,
         onTap: () {},
-        onShare: () async {
-          await SharePlus.instance.share(
+        onShare: () {
+          final repo = context.read<ScanRepository>();
+          SharePlus.instance.share(
             ShareParams(
-              // files: [XFile(scan.imagePath)],
-              text: 'Check out this scan: ${scan.title}',
+              files: scan.files
+                  .map((name) => XFile(repo.pathFor(name)))
+                  .toList(),
             ),
           );
         },
