@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 import '../models/scan.dart';
 import '../state/library_controller.dart';
@@ -30,6 +31,51 @@ class _DetailsPageState extends State<DetailsPage> {
     navigator.pop();
   }
 
+  void _showDetails(Scan scanItem) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Scan Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _detailRow(context, 'Title', scanItem.title),
+            _detailRow(context, 'Format', scanItem.format.label),
+            _detailRow(context, 'Pages', pagesLabel(scanItem.pageCount)),
+            _detailRow(context, 'Size', formatBytes(scanItem.sizeBytes)),
+            _detailRow(context, 'Scanned', formatLongDate(scanItem.createdAt)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: theme.textTheme.bodyMedium),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final live = context.select<LibraryController, Scan?>(
@@ -54,12 +100,12 @@ class _DetailsPageState extends State<DetailsPage> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.delete),
-        //     onPressed: () => _deleteScan(scanItem),
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            onPressed: () => _showDetails(scanItem),
+            icon: const Icon(Icons.info_outline),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -74,7 +120,8 @@ class _DetailsPageState extends State<DetailsPage> {
               clipBehavior: Clip.antiAlias,
               child: scanItem.format == ScanFormat.image
                   ? _buildImages(library.pathsOf(scanItem), scheme)
-                  : _buildPdfView(scanItem, theme),
+                  // : _buildPdfView(scanItem, theme), Only for preview
+                  : PdfViewer.file(library.pathFor(scanItem.files.first)),
             ),
           ),
           Padding(
