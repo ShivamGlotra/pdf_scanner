@@ -4,6 +4,37 @@ import '../models/scan.dart';
 import '../services/scanner_service.dart';
 import '../services/scan_repository.dart';
 
+enum LibrarySort { newest, oldest, name, largest }
+
+extension LibrarySortInfo on LibrarySort {
+  // To be shown in the UI for the user to select a sort option
+  String get label {
+    switch (this) {
+      case LibrarySort.newest:
+        return 'Newest First';
+      case LibrarySort.oldest:
+        return 'Oldest First';
+      case LibrarySort.name:
+        return 'Name, A-Z';
+      case LibrarySort.largest:
+        return 'Largest First';
+    }
+  }
+
+  String get phrase {
+    switch (this) {
+      case LibrarySort.newest:
+        return 'newest First';
+      case LibrarySort.oldest:
+        return 'oldest First';
+      case LibrarySort.name:
+        return 'by name';
+      case LibrarySort.largest:
+        return 'largest First';
+    }
+  }
+}
+
 class LibraryController extends ChangeNotifier {
   LibraryController(this._repository);
 
@@ -13,14 +44,17 @@ class LibraryController extends ChangeNotifier {
   bool _isLoaded = false;
   String _query = '';
   ScanFormat? _filter;
-
+  LibrarySort _sort = LibrarySort.newest;
   bool get isLoaded => _isLoaded;
+  bool _isGridView = true;
 
   // Newest First
   List<Scan> get allScanItems => _scanItems;
 
   String get query => _query;
   ScanFormat? get filter => _filter;
+  LibrarySort get sort => _sort;
+  bool get isGridView => _isGridView;
 
   int get totalBytes => _scanItems.fold(0, (sum, item) => sum + item.sizeBytes);
 
@@ -30,12 +64,37 @@ class LibraryController extends ChangeNotifier {
   // The scans that match the current query and filter
   List<Scan> get filteredScans {
     final needle = _query.trim().toLowerCase();
-    return _scanItems.where((scan) {
+    final result = _scanItems.where((scan) {
+      final matchesFormat = _filter == null || scan.format == _filter;
       final matchesQuery =
           needle.isEmpty || scan.title.toLowerCase().contains(needle);
-      final matchesFormat = _filter == null || scan.format == _filter;
       return matchesQuery && matchesFormat;
     }).toList();
+    result.sort(_compare);
+    return result;
+  }
+
+  int _compare(Scan a, Scan b) {
+    switch (_sort) {
+      case LibrarySort.newest:
+        return b.createdAt.compareTo(a.createdAt);
+      case LibrarySort.oldest:
+        return a.createdAt.compareTo(b.createdAt);
+      case LibrarySort.name:
+        return a.title.toLowerCase().compareTo(b.title.toLowerCase());
+      case LibrarySort.largest:
+        return b.sizeBytes.compareTo(a.sizeBytes);
+    }
+  }
+
+  void toggleGridView() {
+    _isGridView = !_isGridView;
+    notifyListeners();
+  }
+
+  void setSort(LibrarySort value) {
+    _sort = value;
+    notifyListeners();
   }
 
   Scan? byID(String id) {
