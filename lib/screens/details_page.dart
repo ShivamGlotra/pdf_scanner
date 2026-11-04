@@ -8,6 +8,7 @@ import '../models/scan.dart';
 import '../state/library_controller.dart';
 import '../utils/format.dart';
 import '../utils/scan_actions.dart';
+import 'fullscreen_viewer_page.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({super.key, required this.initial});
@@ -29,6 +30,15 @@ class _DetailsPageState extends State<DetailsPage> {
     await library.delete(scanItem.id);
     if (!mounted) return;
     navigator.pop();
+  }
+
+  void _openFullScreenViewer(Scan scanItem) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenViewerPage(scanItem: scanItem, initialPage: _pageCount),
+      ),
+    );
   }
 
   void _showDetails(Scan scanItem) {
@@ -105,6 +115,13 @@ class _DetailsPageState extends State<DetailsPage> {
             onPressed: () => _showDetails(scanItem),
             icon: const Icon(Icons.info_outline),
           ),
+          if (scanItem.format == ScanFormat.image)
+            IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Edit pages is coming soon.')),
+              ),
+            ),
         ],
       ),
       body: Column(
@@ -118,10 +135,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 borderRadius: BorderRadius.circular(28),
               ),
               clipBehavior: Clip.antiAlias,
-              child: scanItem.format == ScanFormat.image
-                  ? _buildImages(library.pathsOf(scanItem), scheme)
-                  // : _buildPdfView(scanItem, theme), Only for preview
-                  : PdfViewer.file(library.pathFor(scanItem.files.first)),
+              child: _buildPdfView(scanItem, library, scheme),
             ),
           ),
           Padding(
@@ -185,30 +199,50 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  Widget _buildImages(List<String> paths, ColorScheme scheme) {
+  Widget _buildImages(List<String> paths) {
+    return PageView.builder(
+      itemCount: paths.length,
+      onPageChanged: (index) => setState(() => _pageCount = index),
+      itemBuilder: (context, index) => InteractiveViewer(
+        minScale: 1,
+        maxScale: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Image.file(
+            File(paths[index]),
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                const Center(child: Text('Could not load this page')),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPdfView(
+    Scan scanItem,
+    LibraryController library,
+    ColorScheme scheme,
+  ) {
+    final paths = library.pathsOf(scanItem);
+    final Widget content = scanItem.format == ScanFormat.image
+        ? _buildImages(paths)
+        : PdfViewer.file(library.pathFor(scanItem.files.first));
+
     return Stack(
       children: [
-        PageView.builder(
-          itemCount: paths.length,
-          onPageChanged: (index) => setState(() => _pageCount = index),
-          itemBuilder: (context, index) => InteractiveViewer(
-            minScale: 1,
-            maxScale: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Image.file(
-                File(paths[index]),
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Text(
-                      'Failed to load image',
-                      style: TextStyle(color: scheme.error),
-                    ),
-                  );
-                },
-              ),
+        Positioned.fill(child: content),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: IconButton.filled(
+            tooltip: 'Open Fullscreen Viewer',
+            style: IconButton.styleFrom(
+              backgroundColor: scheme.inverseSurface,
+              foregroundColor: scheme.onInverseSurface,
             ),
+            onPressed: () => _openFullScreenViewer(scanItem),
+            icon: const Icon(Icons.fullscreen),
           ),
         ),
         Positioned(
@@ -223,44 +257,13 @@ class _DetailsPageState extends State<DetailsPage> {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Text(
-                '${_pageCount + 1} / ${paths.length}',
-                style: TextStyle(
-                  color: scheme.onInverseSurface,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+                'Page ${_pageCount + 1} of ${scanItem.pageCount}',
+                style: TextStyle(color: scheme.onInverseSurface, fontSize: 12),
               ),
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildPdfView(Scan scanItem, ThemeData theme) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.picture_as_pdf,
-            size: 96,
-            color: theme.colorScheme.primary,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            pagesLabel(scanItem.pageCount),
-            style: theme.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            formatBytes(scanItem.sizeBytes),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
