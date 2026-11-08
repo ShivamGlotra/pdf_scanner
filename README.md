@@ -114,8 +114,4 @@ The app does not request an account and does not upload anything. Scans leave th
 
 ## Contributing
 
-Issues and pull requests are welcome. Please run `flutter analyze` and `flutter test` before opening a pull request.
-
-## License
-
-Add a license before publishing, for example [MIT](https://choosealicense.com/licenses/mit/).
+Issues and pull requests are welcome. Please run `flutter analyze` and `flutter test` before opening a
